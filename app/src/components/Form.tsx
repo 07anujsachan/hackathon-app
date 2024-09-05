@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { addHackathon } from "../store/hackathon.slice";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addHackathon, editHackathon } from "../store/hackathon.slice";
+import { Link } from "react-router-dom";
 
 export const Form = () => {
   const dispatch = useDispatch();
-
+  const data = useSelector((state: any) => state.hackathon.editableHackathon);
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -14,6 +15,17 @@ export const Form = () => {
   const [description, setDescription] = useState("");
   const [level, setLevel] = useState("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (data) {
+      setName(data.name);
+      setDescription(data.description);
+      setStartDate(data.startDate);
+      setEndDate(data.endDate);
+      setImageURL(data.image);
+      setLevel(data.level);
+    }
+  }, [data]);
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -184,23 +196,41 @@ export const Form = () => {
               <option value="Hard">Hard</option>
             </select>
           </div>
-          <button
-            onClick={() =>
-              dispatch(
-                addHackathon({
-                  name: name,
-                  description: description,
-                  startDate: startDate,
-                  endDate: endDate,
-                  image: imageURL,
-                  level: level,
-                })
-              )
-            }
-            className="bg-[#44924C] text-white py-2 rounded-lg px-4 mt-10"
-          >
-            Create Challenge
-          </button>
+          <Link to="/">
+            {" "}
+            <button
+              onClick={() => {
+                if (data !== null) {
+                  dispatch(
+                    editHackathon({
+                      id: data.id,
+                      name: name,
+                      description: description,
+                      startDate: startDate,
+                      endDate: endDate,
+                      image: imageURL,
+                      level: level,
+                    })
+                  );
+                } else {
+                  dispatch(
+                    addHackathon({
+                      id: `${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+                      name: name,
+                      description: description,
+                      startDate: startDate,
+                      endDate: endDate,
+                      image: imageURL,
+                      level: level,
+                    })
+                  );
+                }
+              }}
+              className="bg-[#44924C] text-white py-2 rounded-lg px-4 mt-10"
+            >
+              {`${data !== null ? "Edit" : "Create"} Challenge`}
+            </button>
+          </Link>
         </div>
       </div>
     </>

@@ -4,6 +4,7 @@ import { Main } from "./components/Main";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Form } from "./components/Form";
+import { Details } from "./components/CardDetails";
 // import { Form } from './components/Form';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/form" element={<Form />} />
+          <Route path="/details" element={<Details />} />
         </Routes>
       </Router>
     </div>
